@@ -171,6 +171,7 @@ function App() {
             'N/A'
           )}
         </td>
+        <td>{network.issuanceRewards ? 'Yes' : 'No'}</td>
       </tr>
     ));
   };
@@ -200,6 +201,7 @@ function App() {
             <th>Network Name <span className="sort-indicator">▲</span></th>
             <th>Chain ID</th>
             <th>Explorer URL</th>
+            <th>Indexing Rewards</th>
           </tr>
         </thead>
         <tbody>
