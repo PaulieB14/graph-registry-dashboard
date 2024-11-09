@@ -39,7 +39,7 @@ const getLogoUrl = (network) => {
     "Mantra Mainnet": "mantra-mainnet.png",
     "Mode Mainnet": "mode-mainnet.png",
     "Moonbeam Mainnet": "moonbeam-mainnet.png",
-    "Moonriver Mainnet": "moonriver-mainnet.png",
+    "Moonriver Mainnet": "moonriver.png",
     "Near Mainnet": "near-mainnet.png",
     "Neo X Mainnet": "neo-x-mainnet.png",
     "OP Mainnet": "op-mainnet.png",
