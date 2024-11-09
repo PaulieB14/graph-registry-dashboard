@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import * as Icons from '@web3icons/react';
 
 // Function to determine the logo URL for a given network
 const getLogoUrl = (network) => {
@@ -147,36 +148,44 @@ function App() {
   const renderRows = (networksList) => {
     return networksList
       .filter(network => !showIndexingRewardsOnly || network.issuanceRewards) // Filter based on checkbox state
-      .map((network, index) => (
-        <tr key={index}>
-          <td>
-            <img
-              src={network.logoUrl || '/logos/default.png'}
-              alt={`${network.fullName} logo`}
-              className="network-logo"
-              onLoad={(e) => {
-                e.target.classList.add('loaded'); // Add the loaded class when the image is loaded
-              }}
-              onError={(e) => {
-                e.target.src = '/logos/default.png'; // Fallback if the logo fails to load
-                e.target.classList.add('loaded'); // Ensure the fallback image also gets the loaded class
-              }}
-            />
-            {network.fullName}
-          </td>
-          <td>{network.issuanceRewards ? 'Yes' : 'No'}</td>
-          <td>{network.caip2Id}</td>
-          <td>
-            {network.explorerUrls ? (
-              <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">
-                {network.explorerUrls[0]}
-              </a>
-            ) : (
-              'N/A'
-            )}
-          </td>
-        </tr>
-      ));
+      .map((network, index) => {
+        const IconComponent = Icons[network.fullName.replace(/\s+/g, '')] || null;
+
+        return (
+          <tr key={index}>
+            <td>
+              {IconComponent ? (
+                <IconComponent className="network-logo" />
+              ) : (
+                <img
+                  src={network.logoUrl || '/logos/default.png'}
+                  alt={`${network.fullName} logo`}
+                  className="network-logo"
+                  onLoad={(e) => {
+                    e.target.classList.add('loaded'); // Add the loaded class when the image is loaded
+                  }}
+                  onError={(e) => {
+                    e.target.src = '/logos/default.png'; // Fallback if the logo fails to load
+                    e.target.classList.add('loaded'); // Ensure the fallback image also gets the loaded class
+                  }}
+                />
+              )}
+              {network.fullName}
+            </td>
+            <td>{network.issuanceRewards ? 'Yes' : 'No'}</td>
+            <td>{network.caip2Id}</td>
+            <td>
+              {network.explorerUrls ? (
+                <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">
+                  {network.explorerUrls[0]}
+                </a>
+              ) : (
+                'N/A'
+              )}
+            </td>
+          </tr>
+        );
+      });
   };
 
   return (
