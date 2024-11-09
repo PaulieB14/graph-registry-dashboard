@@ -72,3 +72,21 @@ tr:hover {
 .network-item a:hover {
   color: #d0021b;
 }
+
+.network-logo {
+  width: 24px; /* Adjust to the desired consistent size */
+  height: 24px; /* Adjust to match width */
+  margin-right: 10px;
+  vertical-align: middle;
+  object-fit: contain; /* Ensures the logo is not stretched or squished */
+  border-radius: 5%; /* Optional: gives slightly rounded edges to logos */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for a polished look */
+  background-color: #ffffff; /* Optional: white background for visibility */
+  opacity: 0; /* Initially set to 0 for transition */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition for fading in */
+}
+
+.network-logo.loaded {
+  opacity: 1; /* Once loaded, make the image fully visible */
+}
+

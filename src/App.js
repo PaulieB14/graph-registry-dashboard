@@ -1,49 +1,95 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+// Function to determine the logo URL for a given network
+const getLogoUrl = (network) => {
+  const logoMapping = {
+    "Ethereum Mainnet": "ethereum.png",
+    "Ethereum Testnet": "ethereum.png",
+    "Optimism": "optimism.png",
+    "Gnosis": "gnosis.png",
+    // Add additional mappings for other networks here
+  };
+  return `/logos/${logoMapping[network.fullName] || 'default.png'}`;
+};
+
 function App() {
-  const [mainnets, setMainnets] = useState([]);
-  const [testnets, setTestnets] = useState([]);
+  const [networks, setNetworks] = useState({ mainnets: [], testnets: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('mainnet'); // Track the active tab
+  const [activeTab, setActiveTab] = useState('mainnet');
 
   useEffect(() => {
-    fetch("https://graphregistry.pages.dev/TheGraphNetworksRegistry.json")
-      .then(response => response.json())
-      .then(data => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://graphregistry.pages.dev/TheGraphNetworksRegistry.json");
+        const data = await response.json();
         const allNetworks = data.networks || [];
-        
-        // Separate mainnets and testnets and sort them alphabetically by fullName
+
+        // Sort and separate mainnets and testnets
         const sortedMainnets = allNetworks
           .filter(network => network.networkType === 'mainnet' && !network.fullName.toLowerCase().includes('testnet'))
           .sort((a, b) => a.fullName.localeCompare(b.fullName));
-        
+
         const sortedTestnets = allNetworks
           .filter(network => network.networkType === 'testnet' || network.fullName.toLowerCase().includes('testnet'))
           .sort((a, b) => a.fullName.localeCompare(b.fullName));
-        
-        setMainnets(sortedMainnets);
-        setTestnets(sortedTestnets);
+
+        // Add logo URLs to mainnets and testnets
+        const mainnetsWithLogos = sortedMainnets.map(network => ({
+          ...network,
+          logoUrl: getLogoUrl(network)
+        }));
+
+        const testnetsWithLogos = sortedTestnets.map(network => ({
+          ...network,
+          logoUrl: getLogoUrl(network)
+        }));
+
+        setNetworks({ mainnets: mainnetsWithLogos, testnets: testnetsWithLogos });
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error("Error fetching data:", error);
         setError(error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading data.</div>;
 
-  // Function to render table rows based on selected tab
+  // Function to render the rows of the network table
   const renderRows = (networksList) => {
     return networksList.map((network, index) => (
       <tr key={index}>
-        <td>{network.fullName}</td>
+        <td>
+          <img
+            src={network.logoUrl || '/logos/default.png'}
+            alt={`${network.fullName} logo`}
+            className="network-logo"
+            onLoad={(e) => {
+              e.target.classList.add('loaded'); // Add the loaded class when the image is loaded
+            }}
+            onError={(e) => {
+              e.target.src = '/logos/default.png'; // Fallback if the logo fails to load
+              e.target.classList.add('loaded'); // Ensure the fallback image also gets the loaded class
+            }}
+          />
+          {network.fullName}
+        </td>
         <td>{network.caip2Id}</td>
-        <td>{network.explorerUrls ? <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">{network.explorerUrls[0]}</a> : 'N/A'}</td>
+        <td>
+          {network.explorerUrls ? (
+            <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">
+              {network.explorerUrls[0]}
+            </a>
+          ) : (
+            'N/A'
+          )}
+        </td>
       </tr>
     ));
   };
@@ -76,7 +122,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {activeTab === 'mainnet' ? renderRows(mainnets) : renderRows(testnets)}
+          {activeTab === 'mainnet' ? renderRows(networks.mainnets) : renderRows(networks.testnets)}
         </tbody>
       </table>
     </div>
