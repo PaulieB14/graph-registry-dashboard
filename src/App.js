@@ -99,6 +99,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('mainnet');
+  const [showIndexingRewardsOnly, setShowIndexingRewardsOnly] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,36 +145,38 @@ function App() {
 
   // Function to render the rows of the network table
   const renderRows = (networksList) => {
-    return networksList.map((network, index) => (
-      <tr key={index}>
-        <td>
-          <img
-            src={network.logoUrl || '/logos/default.png'}
-            alt={`${network.fullName} logo`}
-            className="network-logo"
-            onLoad={(e) => {
-              e.target.classList.add('loaded'); // Add the loaded class when the image is loaded
-            }}
-            onError={(e) => {
-              e.target.src = '/logos/default.png'; // Fallback if the logo fails to load
-              e.target.classList.add('loaded'); // Ensure the fallback image also gets the loaded class
-            }}
-          />
-          {network.fullName}
-        </td>
-        <td>{network.caip2Id}</td>
-        <td>
-          {network.explorerUrls ? (
-            <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">
-              {network.explorerUrls[0]}
-            </a>
-          ) : (
-            'N/A'
-          )}
-        </td>
-        <td>{network.issuanceRewards ? 'Yes' : 'No'}</td>
-      </tr>
-    ));
+    return networksList
+      .filter(network => !showIndexingRewardsOnly || network.issuanceRewards) // Filter based on checkbox state
+      .map((network, index) => (
+        <tr key={index}>
+          <td>
+            <img
+              src={network.logoUrl || '/logos/default.png'}
+              alt={`${network.fullName} logo`}
+              className="network-logo"
+              onLoad={(e) => {
+                e.target.classList.add('loaded'); // Add the loaded class when the image is loaded
+              }}
+              onError={(e) => {
+                e.target.src = '/logos/default.png'; // Fallback if the logo fails to load
+                e.target.classList.add('loaded'); // Ensure the fallback image also gets the loaded class
+              }}
+            />
+            {network.fullName}
+          </td>
+          <td>{network.issuanceRewards ? 'Yes' : 'No'}</td>
+          <td>{network.caip2Id}</td>
+          <td>
+            {network.explorerUrls ? (
+              <a href={network.explorerUrls[0]} target="_blank" rel="noopener noreferrer">
+                {network.explorerUrls[0]}
+              </a>
+            ) : (
+              'N/A'
+            )}
+          </td>
+        </tr>
+      ));
   };
 
   return (
@@ -195,13 +198,24 @@ function App() {
         </button>
       </div>
 
+      <div className="filter-options">
+        <label>
+          <input 
+            type="checkbox" 
+            checked={showIndexingRewardsOnly}
+            onChange={() => setShowIndexingRewardsOnly(!showIndexingRewardsOnly)}
+          />
+          Show only networks with Indexing Rewards
+        </label>
+      </div>
+
       <table className={activeTab === 'mainnet' ? 'mainnet-table' : 'testnet-table'}>
         <thead>
           <tr>
             <th>Network Name <span className="sort-indicator">▲</span></th>
+            <th>Indexing Rewards</th>
             <th>Chain ID</th>
             <th>Explorer URL</th>
-            <th>Indexing Rewards</th>
           </tr>
         </thead>
         <tbody>
