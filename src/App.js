@@ -4,13 +4,15 @@ import './App.css';
 // Function to determine the logo URL for a given network
 const getLogoUrl = (network) => {
   const logoMapping = {
-    "Ethereum Mainnet": "ethereum.png",
-    "Ethereum Testnet": "ethereum.png",
+    "Ethereum Mainnet": "ethereum-mainnet.png",
+    "Ethereum Testnet": "ethereum-testnet.png",
     "Optimism": "optimism.png",
     "Gnosis": "gnosis.png",
     // Add additional mappings for other networks here
   };
-  return `/logos/${logoMapping[network.fullName] || 'default.png'}`;
+  const logoUrl = `/logos/${logoMapping[network.fullName] || 'default.png'}`;
+  console.log(`Logo URL for ${network.fullName}: ${logoUrl}`); // Debugging output
+  return logoUrl;
 };
 
 function App() {
