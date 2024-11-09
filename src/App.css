@@ -90,3 +90,47 @@ tr:hover {
   opacity: 1; /* Once loaded, make the image fully visible */
 }
 
+/* Media queries for mobile responsiveness */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .tabs button {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  .network-logo {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.2em;
+  }
+
+  .tabs button {
+    padding: 6px 12px;
+    font-size: 0.8em;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+
+  .network-logo {
+    width: 16px;
+    height: 16px;
+  }
+}
